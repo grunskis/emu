@@ -1,4 +1,4 @@
-test: 8080.o test.o
+build: 8080.o test.o
 	@gcc -g -o test test.o 8080.o
 
 8080.o: 8080.c 8080.h
@@ -7,7 +7,10 @@ test: 8080.o test.o
 test.o: test.c
 	@gcc -g -c -o test.o test.c
 
-.PHONY: clean
+.PHONY: clean test
 
 clean:
 	@rm -f *.o test
+
+test: build
+	@./test
