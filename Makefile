@@ -14,3 +14,4 @@ clean:
 
 test: build
 	@./test
+

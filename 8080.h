@@ -4,11 +4,28 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+// value of from "9th bit"
+#define FLAG_CARRY (1 << 0)
+
+// value from bit 7
+#define FLAG_SIGN  (1 << 1)
+
+// flag = accumulator == 0
+#define FLAG_ZERO  (1 << 2)
+
+// flag = accumulator == even ? 1 : 0
+#define FLAG_PARITY (1 << 3)
+
+#define FLAG_AUX_CARRY (1 << 4)
+
 struct registers {
   uint8_t a; // 8-bit accumulator
 
   // 8-bit registers
   uint8_t b, c, d, e, h, l;
+
+  // flag register
+  uint8_t f;
   
   uint16_t pc; // program counter
 };

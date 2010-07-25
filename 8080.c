@@ -3,7 +3,7 @@
 
 #include "8080.h"
 
-static uint8_t inc(uint8_t);
+static uint8_t inc(cpu_t *, uint8_t);
 
 struct instruction_set instruction_set[] = {
   {0x00, 4, cpu_00}, // NOP
@@ -69,7 +69,7 @@ void cpu_00(cpu_t *cpu) {
 }
 
 void cpu_04(cpu_t *cpu) {
-  cpu->registers.b = inc(cpu->registers.b);
+  cpu->registers.b = inc(cpu, cpu->registers.b);
 }
 
 void cpu_06(cpu_t *cpu) {
@@ -80,7 +80,32 @@ void cpu_76(cpu_t *cpu) {
   cpu->halt = 1;
 }
 
-static uint8_t inc(uint8_t val) {
-  return ++val; // TODO update flags register
+// does not change carry flag
+static uint8_t inc(cpu_t *cpu, uint8_t val) {
+  val++;
+
+  if (val == 0) {
+    cpu->registers.f |= FLAG_ZERO;
+  }
+
+  if (val % 2 == 0) {
+    cpu->registers.f |= FLAG_PARITY;
+  } else {
+    cpu->registers.f &= ~FLAG_PARITY;
+  }
+
+  if (val & (1 << 7) == (1 << 7)) {
+    cpu->registers.f |= FLAG_SIGN;
+  } else {
+    cpu->registers.f &= ~FLAG_SIGN;
+  }
+
+  if (val & (1 << 3) == (1 << 3)) {
+    cpu->registers.f |= FLAG_AUX_CARRY;
+  } else {
+    cpu->registers.f &= ~FLAG_AUX_CARRY;
+  }
+
+  return val;
 }
 
